@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#170b28">
+  <title>Scarily Sweet — магазин кукол</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg:#170b28; --panel:#241238; --panel2:#2d1742; --pink:#ff4fa8;
+      --pink2:#f58ac1; --text:#fff7fc; --muted:#c2a9d0; --line:#4a2b5b;
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:560px;min-height:100dvh;margin:auto;padding:env(safe-area-inset-top) 16px calc(92px + env(safe-area-inset-bottom))}
+    .splash{min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 24px;background:radial-gradient(ellipse at 50% 55%,#35164b 0%,#1c0d2d 48%,#12081e 100%)}
+    .bat{font-size:56px;margin-bottom:28px;filter:drop-shadow(0 8px 18px #0008)}
+    .brand{font-size:clamp(38px,10vw,58px);font-weight:900;letter-spacing:1px;color:var(--pink);line-height:1.05;text-shadow:0 0 28px #ff4fa833}
+    .splash button{width:min(100%,420px);margin-top:58px;border:0;border-radius:100px;padding:19px 24px;background:#10071c;color:var(--pink);font-size:22px;font-weight:800;letter-spacing:.3px;box-shadow:0 12px 35px #09031188}
+    .splash small{margin-top:22px;color:var(--muted);font-size:16px}
+    .hidden{display:none!important}
+    header{display:flex;align-items:center;justify-content:space-between;padding:22px 2px 20px}
+    .wordmark{font-family:Georgia,serif;font-style:italic;font-weight:bold;color:var(--pink2);font-size:27px}
+    .iconbtn{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--pink2);font-size:20px}
+    h1{font-size:29px;margin:12px 0 6px}
+    .sub{color:var(--muted);margin:0 0 22px;line-height:1.5}
+    .hero{padding:20px;border-radius:var(--radius);background:linear-gradient(135deg,#351849,#21102f);border:1px solid var(--line);margin-bottom:18px}
+    .eyebrow{font-size:12px;letter-spacing:2px;color:var(--pink2);font-weight:800}
+    .hero h2{font-size:24px;margin:8px 0}
+    .hero p{color:var(--muted);margin:0;line-height:1.45}
+    .sectionhead{display:flex;justify-content:space-between;align-items:center;margin:24px 2px 12px}
+    .sectionhead h2{font-size:21px;margin:0}
+    .sectionhead span{font-size:13px;color:var(--pink2)}
+    .search{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:0 14px;margin:16px 0}
+    .search span{font-size:20px;color:var(--muted)}
+    .search input{min-width:0;width:100%;padding:16px 0;background:transparent;border:0;outline:0;color:var(--text)}
+    .chips{display:flex;gap:9px;overflow:auto;padding:2px 0 8px;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{white-space:nowrap;border:1px solid var(--line);border-radius:30px;padding:10px 16px;background:var(--panel);color:var(--text)}
+    .chip.active{background:var(--pink);border-color:var(--pink);color:#260d22;font-weight:800}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .product{overflow:hidden;border-radius:20px;background:var(--panel);border:1px solid var(--line)}
+    .art{height:190px;display:flex;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle at 50% 40%,#62315f,#29143d 72%)}
+    .art .emoji{font-size:86px;filter:drop-shadow(0 12px 10px #09031188)}
+    .tag{position:absolute;top:10px;left:10px;border-radius:20px;padding:6px 9px;background:#10071dcc;color:#ff9aca;font-size:11px;font-weight:800}
+    .info{padding:12px}
+    .info h3{font-size:15px;line-height:1.3;margin:0 0 7px;min-height:39px}
+    .price{font-size:16px;font-weight:800;color:var(--pink2)}
+    .add{width:100%;margin-top:10px;border:0;border-radius:12px;padding:10px;background:var(--pink);color:#260d22;font-weight:800}
+    .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:32px 12px}
+    .page{display:none}.page.active{display:block}
+    .bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);display:flex;justify-content:space-around;padding:12px 8px calc(12px + env(safe-area-inset-bottom));background:#1c0d2cf2;border-top:1px solid var(--line);backdrop-filter:blur(16px)}
+    .nav{background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px}
+    .nav b{font-size:21px;font-weight:500}.nav.active{color:var(--pink)}
+    .cartrow{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);gap:12px}
+    .cartrow small{display:block;color:var(--muted);margin-top:4px}
+    .qty{display:flex;align-items:center;gap:10px}.qty button{border:1px solid var(--line);background:var(--panel2);color:white;border-radius:9px;width:30px;height:30px}
+    .primary{width:100%;border:0;border-radius:15px;padding:15px;background:var(--pink);color:#260d22;font-weight:900;margin-top:18px}
+    .note{font-size:13px;color:var(--muted);line-height:1.5}
+    .modal{position:fixed;inset:0;background:#08040dcc;display:flex;align-items:flex-end;z-index:5}
+    .sheet{width:min(560px,100%);margin:auto auto 0;background:var(--panel);border:1px solid var(--line);border-radius:26px 26px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
+    .sheet .art{height:220px;border-radius:18px;margin-bottom:16px}
+    .close{float:right;border:0;background:transparent;color:var(--muted);font-size:25px}
+    @media(min-width:520px){.app{padding-left:22px;padding-right:22px}.art{height:220px}}
+  </style>
+</head>
+<body>
+  <section class="splash" id="splash">
+    <div class="bat">🦇 🖤</div>
+    <div class="brand">Scarily Sweet</div>
+    <button id="enter">Открыть магазин</button>
+    <small>Магазин коллекционных кукол</small>
+  </section>
+
+  <main class="app hidden" id="app">
+    <header><div class="wordmark">Scarily Sweet</div><button class="iconbtn" aria-label="Корзина" onclick="showPage('cart')">♡<span id="cartCount"></span></button></header>
+    <section class="page active" id="home">
+      <h1>Привет! 🦇</h1>
+      <p class="sub">Добро пожаловать в мир необычных кукол.</p>
+      <div class="hero"><div class="eyebrow">SCARILY SWEET STORE</div><h2>Найди свою любимицу</h2><p>Monster High, Bratz и другие коллекционные куклы — в одном месте.</p></div>
+      <div class="sectionhead"><h2>Популярное</h2><span onclick="showPage('catalog')">Весь каталог →</span></div>
+      <div class="grid" id="featured"></div>
+    </section>
+
+    <section class="page" id="catalog">
+      <h1>Каталог</h1>
+      <p class="sub">Выбирай куклу, которая покорит твоё сердце.</p>
+      <label class="search"><span>⌕</span><input id="search" placeholder="Найти куклу или коллекцию…"></label>
+      <div class="chips" id="chips"></div>
+      <div class="sectionhead"><h2>Все куклы</h2><span id="resultCount"></span></div>
+      <div class="grid" id="products"></div>
+    </section>
+
+    <section class="page" id="cart">
+      <h1>Корзина</h1><p class="sub">Твои будущие сокровища.</p>
+      <div id="cartItems"></div><div class="sectionhead"><h2>Итого</h2><strong id="total">0 ₽</strong></div>
+      <button class="primary" id="order">Оформить заказ</button>
+      <p class="note">После нажатия можно связаться с магазином и уточнить наличие, доставку и оплату.</p>
+    </section>
+
+    <section class="page" id="profile">
+      <h1>Связаться с нами</h1><p class="sub">Поможем с выбором и ответим на вопросы о заказе.</p>
+      <div class="hero"><h2>Scarily Sweet</h2><p>По вопросам покупки, наличия и доставки напиши нам в Telegram.</p></div>
+      <p class="note">Добавь ссылку на свой Telegram-аккаунт или канал в настройке CONTACT_URL внизу файла.</p>
+      <button class="primary" id="contact">Написать продавцу</button>
+    </section>
+  </main>
+
+  <nav class="bottom hidden" id="bottom">
+    <button class="nav active" data-page="home"><b>⌂</b>Главная</button>
+    <button class="nav" data-page="catalog"><b>▦</b>Каталог</button>
+    <button class="nav" data-page="cart"><b>♡</b>Корзина</button>
+    <button class="nav" data-page="profile"><b>☾</b>Профиль</button>
+  </nav>
+  <div class="modal hidden" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+  // Замените примеры на свои товары. Для фото укажите прямую ссылку в поле image.
+  const CONTACT_URL = "https://t.me/your_username";
+  const CATEGORIES = ["Все", "Monster High", "Bratz", "Barbie", "Другие"];
+  const dolls = [
+    {id:5,name:"Monster High Skullector Draculaura Halloween Edition",category:"Monster High",price:19000,tag:"Эксклюзив",emoji:"🦇",image:"https://images.mattel.net/image/upload/c_scale%2Cw_160/creations-us-prod/files/trfwlmhbtiiu1stnwt9k.jpg?v=1784668824",description:"Коллекционная Draculaura в готическом чёрно-розовом образе: корсет со шнуровкой, эффектная юбка с кружевом, крылатый головной убор с вуалью и розовая сумочка-фонарь. В комплекте подставка и сертификат подлинности."},
+    {id:1,name:"Monster High Draculaura",category:"Monster High",price:5900,tag:"Популярное",emoji:"🦇",image:""},
+    {id:2,name:"Monster High — коллекционная",category:"Monster High",price:6500,tag:"Новинка",emoji:"🕸️",image:""},
+    {id:3,name:"Bratz Fashion Doll",category:"Bratz",price:4800,tag:"В наличии",emoji:"💋",image:""},
+    {id:4,name:"Barbie Collector",category:"Barbie",price:5200,tag:"Коллекция",emoji:"🎀",image:""}
+  ];
+  const cart = {};
+  let category = "Все";
+  const money = n => new Intl.NumberFormat("ru-RU").format(n) + " ₽";
+  const card = d => `<article class="product" onclick="openProduct(${d.id})"><div class="art">${d.tag?`<span class="tag">${d.tag}</span>`:""}${d.image?`<img src="${d.image}" alt="${d.name}" style="width:100%;height:100%;object-fit:contain">`:`<span class="emoji">${d.emoji}</span>`}</div><div class="info"><h3>${d.name}</h3><div class="price">${money(d.price)}</div><button class="add" onclick="event.stopPropagation();add(${d.id})">В корзину</button></div></article>`;
+  function renderProducts(){
+    const q=(document.getElementById("search")?.value||"").toLowerCase();
+    const filtered=dolls.filter(d=>(category==="Все"||d.category===category)&&(d.name+" "+d.category).toLowerCase().includes(q));
+    document.getElementById("products").innerHTML=filtered.length?filtered.map(card).join(""):`<div class="empty">Ничего не найдено. Попробуй другой запрос 🖤</div>`;
+    document.getElementById("resultCount").textContent=filtered.length+" шт.";
+  }
+  function renderChips(){document.getElementById("chips").innerHTML=CATEGORIES.map(c=>`<button class="chip ${c===category?"active":""}" onclick="setCategory('${c}')">${c}</button>`).join("")}
+  function setCategory(c){category=c;renderChips();renderProducts()}
+  function renderCart(){
+    const entries=Object.entries(cart).filter(([,q])=>q>0);
+    document.getElementById("cartItems").innerHTML=entries.length?entries.map(([id,q])=>{const d=dolls.find(x=>x.id==id);return `<div class="cartrow"><div><b>${d.name}</b><small>${money(d.price)} × ${q}</small></div><div class="qty"><button onclick="changeQty(${id},-1)">−</button>${q}<button onclick="changeQty(${id},1)">+</button></div></div>`}).join(""):`<p class="note">Корзина пока пуста. Самое время выбрать куклу ✨</p>`;
+    const total=entries.reduce((s,[id,q])=>s+dolls.find(d=>d.id==id).price*q,0);
+    document.getElementById("total").textContent=money(total);
+    const count=entries.reduce((s,[,q])=>s+q,0);document.getElementById("cartCount").textContent=count?` ${count}`:"";
+  }
+  function add(id){cart[id]=(cart[id]||0)+1;renderCart();const b=event?.target;if(b){b.textContent="Добавлено ✓";setTimeout(()=>b.textContent="В корзину",900)}}
+  function changeQty(id,n){cart[id]=Math.max(0,(cart[id]||0)+n);renderCart()}
+  function openProduct(id){
+    const d=dolls.find(x=>x.id===id);
+    document.getElementById("sheet").innerHTML=`<button class="close" onclick="closeModal()">×</button><div class="art">${d.image?`<img src="${d.image}" style="width:100%;height:100%;object-fit:contain">`:`<span class="emoji">${d.emoji}</span>`}</div><div class="eyebrow">${d.category}</div><h2>${d.name}</h2><div class="price">${money(d.price)}</div><p class="note">${d.description||"Уточни наличие и состояние куклы перед оформлением заказа."}</p><button class="primary" onclick="add(${id});closeModal()">Добавить в корзину</button>`;
+    document.getElementById("modal").classList.remove("hidden");
+  }
+  function closeModal(){document.getElementById("modal").classList.add("hidden")}
+  function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.page===id));if(id==="cart")renderCart();if(id==="catalog")renderProducts();window.scrollTo(0,0)}
+  document.getElementById("enter").onclick=()=>{document.getElementById("splash").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("bottom").classList.remove("hidden");if(window.Telegram?.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();}};
+  document.querySelectorAll(".nav").forEach(n=>n.onclick=()=>showPage(n.dataset.page));
+  document.getElementById("search").addEventListener("input",renderProducts);
+  document.getElementById("order").onclick=()=>{const lines=Object.entries(cart).filter(([,q])=>q>0).map(([id,q])=>{const d=dolls.find(x=>x.id==id);return `${d.name} × ${q} — ${money(d.price*q)}`});if(!lines.length){alert("Сначала добавь куклу в корзину.");return;}const msg=encodeURIComponent("Здравствуйте! Хочу оформить заказ:\n"+lines.join("\n")+"\nИтого: "+document.getElementById("total").textContent);if(CONTACT_URL.includes("your_username"))alert("Добавь свой Telegram username в CONTACT_URL в коде.");else window.open(CONTACT_URL+"?text="+msg,"_blank");};
+  document.getElementById("contact").onclick=()=>{if(CONTACT_URL.includes("your_username"))alert("Добавь свой Telegram username в CONTACT_URL в коде.");else window.open(CONTACT_URL,"_blank")};
+  document.getElementById("featured").innerHTML=dolls.slice(0,2).map(card).join("");
+  renderChips();renderProducts();renderCart();
+</script>
+</body>
+</html>
